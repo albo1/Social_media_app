@@ -55,7 +55,7 @@ const userControllers = {
             { _id: params.userId },
             { $pull: { friends: { friendId: params.friendId}}},
             )
-        .then(dbUserData => res.json(dbUserData)( "Friend Removed!"(params.friendId, 'User')))
+            .then(dbUserData => res.json({ message: `Friend Removed! ${params.friendId} from User` }))
         .catch((err) => res.status(500).json(err));
     },
 
