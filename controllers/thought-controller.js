@@ -24,7 +24,7 @@ const thoughtControllers = {
     },
     deleteThought({params}, res) {
         Thought.findOneAndDelete({_id: params.id })  
-          .then(dbThoughtData => dbThoughtData ? res.json( 'Thought has been successfully deleted'(dbThoughtData._id)) : res.status(404).json({ message: 'No thought with that ID found'(params.id)}))
+          .then(dbThoughtData => dbThoughtData ? res.json(`Thought has been successfully deleted with ID: ${dbThoughtData._id}`) : res.status(404).json({ message: 'No thought with that ID found' }))
           .catch((err) => 
             res.status(500).json(err)
           );
@@ -36,7 +36,7 @@ const thoughtControllers = {
     },
     addReaction({params, body}, res) {
         console.log('Adding Reaction...');
-        console.log(req.body);
+        console.log(body);
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
             { $push: { reactions: {reactionBody: body.reactionBody, username: body.username} }},
@@ -49,7 +49,12 @@ const thoughtControllers = {
             { _id: params.thoughtId },
             { $pull: { reactions: { _id: params.reactionId}}},
             { new: true })
-           .then(dbThoughtData => dbThoughtData ? res.json("Reaction Removed!"(params.thoughtId)) : res.status(404).json({ message: 'No thought with that ID found!'}))
+            .then((dbThoughtData) => {
+              if (!dbThoughtData) {
+                return res.status(404).json({ message: 'No thought with that ID found!' });
+              }
+              res.json({ message: 'Reaction removed!', updatedThought: dbThoughtData });
+            })
            .catch((err) => res.status(500).json(err));
     },
 
