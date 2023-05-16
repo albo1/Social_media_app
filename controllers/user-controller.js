@@ -1,5 +1,6 @@
 const {Thought, User} = require('../models');
-const { populate } = require('../models/User');
+// const { populate } = require('../models/User');
+const {populate} = require('mongoose');
 
 
 const userControllers = {
@@ -21,7 +22,7 @@ const userControllers = {
     createUser({body}, res) {
         User.create({username: body.username, email: body.email})
           .then(dbUserData => res.json(dbUserData))
-          .catch((err) => res.status(500).json(err));
+          .catch((err) => {console.log(err); res.status(500).json(err)});
     },
     deleteUser({params}, res) {
         User.findOneAndDelete({_id: params.id })  
